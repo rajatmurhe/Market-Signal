@@ -7,3 +7,9 @@ An AI-driven stock market prediction terminal that synthesizes live market data,
 - **AI News Sentiment:** Analyzes Google News RSS feeds using VADER to generate bullish/bearish indicators.
 - **Market-Signal Copilot:** Autonomous chatbot for natural language stock queries.
 - **Prediction Market Engine:** Calculates Fair Value odds based on AI signal confidence.
+
+## Installation
+```bash
+pip install -r requirements_new.txt
+python3 app.py
+```
