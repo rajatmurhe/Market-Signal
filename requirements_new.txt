@@ -1,0 +1,12 @@
+beautifulsoup4
+certifi
+feedparser
+flask
+flask-cors
+nltk
+numpy
+requests>=2.33.0
+textblob
+vaderSentiment
+yfinance
+cachetools
