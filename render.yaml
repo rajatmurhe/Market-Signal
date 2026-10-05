@@ -1,7 +1,8 @@
 services:
   - type: web
     name: market-signal
-    plan: free    env: python
+    plan: free
+    env: python
     buildCommand: pip install -r requirements_new.txt
     startCommand: gunicorn app:app --bind 0.0.0.0:$PORT
     envVars:
