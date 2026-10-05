@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Market-Signal — Market Intelligence Terminal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- ======================== TOP NAV ======================== -->
+<nav class="topnav">
+  <div class="topnav-left">
+    <div class="brand">
+      <span class="brand-icon">⬡</span>
+      <span class="brand-name">MARKET<span class="brand-ai">-SIGNAL</span></span>
+    </div>
+    <div class="nav-links">
+      <a href="#" class="nav-link active" data-page="dashboard">Dashboard</a>
+      <a href="#" class="nav-link" data-page="signals" style="color: var(--info); font-weight: bold;">AI Signals</a>
+      <a href="#" class="nav-link" data-page="market">Market</a>
+      <a href="#" class="nav-link" data-page="news">News</a>
+      <a href="#" class="nav-link" data-page="stocks">Stocks</a>
+      <a href="#" class="nav-link" data-page="sectors">Sectors</a>
+      <a href="#" class="nav-link" data-page="alerts">Alerts</a>
+    </div>
+  </div>
+  <div class="topnav-right">
+    <div class="market-status">
+      <span class="status-dot" id="marketStatusDot"></span>
+      <span id="marketStatusText" class="mono">NSE OPEN</span>
+    </div>
+    <div class="live-badge">
+      <span class="live-dot"></span>
+      LIVE
+    </div>
+    <div class="search-wrapper">
+      <input type="text" id="globalSearch" class="search-input" placeholder="Search stocks, news…" autocomplete="off" />
+      <div id="searchDropdown" class="search-dropdown hidden"></div>
+    </div>
+    <button class="icon-btn" id="settingsBtn" title="Settings">⚙</button>
+    <div class="time-display mono" id="clockDisplay"></div>
+  </div>
+</nav>
+
+<!-- ======================== TICKER BAR ======================== -->
+<div class="ticker-bar">
+  <div class="ticker-label">LIVE</div>
+  <div class="ticker-track-wrapper">
+    <div class="ticker-track" id="tickerTrack">
+      <span class="ticker-loading">Loading market data…</span>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== MAIN LAYOUT ======================== -->
+<main class="app-layout" id="dashboardView">
+
+  <!-- LEFT SIDEBAR -->
+  <aside class="sidebar-left" id="sidebarLeft">
+    <div class="sidebar-section">
+      <div class="sidebar-header">
+        <span>WATCHLIST</span>
+        <button class="mini-btn" id="editWatchlistBtn">+</button>
+      </div>
+      <div id="watchlistItems" class="watchlist-items">
+        <div class="skeleton-list">
+          <div class="skeleton-item"></div>
+          <div class="skeleton-item"></div>
+          <div class="skeleton-item"></div>
+          <div class="skeleton-item"></div>
+          <div class="skeleton-item"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-header"><span>MARKET INDICES</span></div>
+      <div id="indicesItems" class="indices-items">
+        <div class="skeleton-list">
+          <div class="skeleton-item"></div>
+          <div class="skeleton-item"></div>
+          <div class="skeleton-item"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-header"><span>SECTOR SENTIMENT</span></div>
+      <div id="sectorSentiment" class="sector-grid">
+        <div class="skeleton-list">
+          <div class="skeleton-item"></div>
+          <div class="skeleton-item"></div>
+          <div class="skeleton-item"></div>
+          <div class="skeleton-item"></div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- CENTER MAIN -->
+  <section class="center-panel" id="centerPanel">
+
+    <!-- MARKET INTELLIGENCE HEADER -->
+    <div class="intel-header">
+      <div class="intel-title">
+        <span class="section-label">MARKET INTELLIGENCE</span>
+        <span class="intel-time mono" id="lastUpdatedTime">—</span>
+      </div>
+      <div class="intel-metrics" id="intelMetrics">
+        <div class="metric-card skeleton-card"></div>
+        <div class="metric-card skeleton-card"></div>
+        <div class="metric-card skeleton-card"></div>
+        <div class="metric-card skeleton-card"></div>
+        <div class="metric-card skeleton-card"></div>
+      </div>
+    </div>
+
+    <!-- AI SIGNALS ROW -->
+    <div class="signals-section">
+      <div class="signals-header">
+        <span class="section-label">TOP AI SIGNALS</span>
+        <span class="badge-new">LIVE</span>
+      </div>
+      <div id="signalsRow" class="signals-row">
+        <div class="skeleton-wide"></div>
+      </div>
+    </div>
+
+    <!-- NEWS FEED -->
+    <div class="news-section">
+      <div class="news-header">
+        <span class="section-label">LIVE NEWS FEED</span>
+        <div class="news-filters" id="newsFilters">
+          <button class="filter-btn active" data-filter="all">ALL</button>
+          <button class="filter-btn" data-filter="bullish">BULLISH</button>
+          <button class="filter-btn" data-filter="bearish">BEARISH</button>
+          <button class="filter-btn" data-filter="neutral">NEUTRAL</button>
+          <button class="filter-btn" data-filter="high_impact">HIGH IMPACT</button>
+          <button class="filter-btn" data-filter="watchlist">WATCHLIST</button>
+        </div>
+        <div class="news-controls">
+          <select class="mini-select" id="newsSectorFilter">
+            <option value="">All Sectors</option>
+            <option value="Technology">Technology</option>
+            <option value="Banking">Banking</option>
+            <option value="Energy">Energy</option>
+            <option value="Healthcare">Healthcare</option>
+            <option value="Auto">Auto</option>
+            <option value="FMCG">FMCG</option>
+          </select>
+          <button class="icon-btn" id="refreshNewsBtn" title="Refresh">↻</button>
+        </div>
+      </div>
+      <div id="newsFeed" class="news-feed">
+        <div class="skeleton-news">
+          <div class="skeleton-item tall"></div>
+          <div class="skeleton-item tall"></div>
+          <div class="skeleton-item tall"></div>
+        </div>
+      </div>
+      <div class="news-pagination">
+        <button class="page-btn" id="loadMoreBtn">Load More</button>
+      </div>
+    </div>
+
+    <!-- SENTIMENT ANALYZER -->
+    <div class="analyzer-section">
+      <div class="sidebar-header"><span>SENTIMENT ANALYZER</span></div>
+      <div class="analyzer-body">
+        <textarea id="analyzeText" class="analyze-textarea" placeholder="Paste any news headline or text to analyze sentiment…"></textarea>
+        <button class="analyze-btn" id="analyzeBtn">ANALYZE</button>
+        <div id="analyzeResult" class="analyze-result hidden"></div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- RIGHT SIDEBAR -->
+  <aside class="sidebar-right" id="sidebarRight">
+
+    <div class="sidebar-section">
+      <div class="sidebar-header"><span>AI INSIGHTS</span></div>
+      <div id="aiInsights" class="insights-list">
+        <div class="skeleton-list">
+          <div class="skeleton-item"></div>
+          <div class="skeleton-item"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-header">
+        <span>ALERTS</span>
+        <span class="alert-count" id="alertCount">0</span>
+      </div>
+      <div id="alertsList" class="alerts-list">
+        <div class="skeleton-list">
+          <div class="skeleton-item"></div>
+          <div class="skeleton-item"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-header"><span>SENTIMENT OVERVIEW</span></div>
+      <div id="sentimentOverview" class="sentiment-overview">
+        <div class="skeleton-item"></div>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-header"><span>NEWS VOLUME</span></div>
+      <canvas id="volumeChart" height="80"></canvas>
+    </div>
+
+  </aside>
+
+</main>
+
+<!-- ======================== PREDICTIONS VIEW ======================== -->
+<main class="predictions-layout hidden" id="predictionsView">
+  <div class="pred-header">
+    <h2>Market Predictions & AI Probabilities</h2>
+    <div class="pred-filters">
+      <button class="filter-btn active">All Markets</button>
+      <button class="filter-btn">Technology</button>
+      <button class="filter-btn">Banking</button>
+    </div>
+  </div>
+  <div class="pred-grid" id="predGrid">
+    <!-- Cards injected via JS -->
+  </div>
+</main>
+
+
+<!-- ======================== TRADE / PREDICTION MODAL ======================== -->
+<div id="tradeModal" class="modal-overlay hidden">
+  <div class="modal-panel" style="max-width: 400px">
+    <div class="modal-header">
+      <div class="modal-meta">
+        <span class="modal-ticker">ORDER ENTRY</span>
+      </div>
+      <button class="modal-close" id="tradeModalClose">✕</button>
+    </div>
+    <div class="modal-body">
+      <h2 class="modal-headline" id="tradeModalHeadline" style="margin-bottom: 4px">—</h2>
+      <div style="color:var(--text-muted); font-size:12px; margin-bottom: 20px" id="tradeModalSub">—</div>
+      
+      <div class="trade-form">
+        <div class="trade-side-selector" id="tradeSideSelector">
+          <button class="trade-side-btn yes active" data-side="Yes">Buy Yes <span id="tradePriceYes">₹0.0</span></button>
+          <button class="trade-side-btn no" data-side="No">Buy No <span id="tradePriceNo">₹0.0</span></button>
+        </div>
+        
+        <div class="trade-input-group">
+          <label>Contracts (Qty)</label>
+          <input type="number" id="tradeQty" value="10" min="1" max="1000" class="trade-input">
+        </div>
+        
+        <div class="trade-summary">
+          <div class="summary-row">
+            <span>Avg Price</span>
+            <strong id="summaryPrice">₹0.00</strong>
+          </div>
+          <div class="summary-row">
+            <span>Total Investment</span>
+            <strong id="summaryTotal">₹0.00</strong>
+          </div>
+          <div class="summary-row">
+            <span>Potential Payout</span>
+            <strong id="summaryPayout" style="color:var(--bullish)">₹0.00</strong>
+          </div>
+        </div>
+        
+        <button class="action-btn w-full" id="submitTradeBtn" style="margin-top:20px; height:44px; font-size:16px">Place Order</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== NEWS DETAIL MODAL ======================== -->
+<div id="newsModal" class="modal-overlay hidden">
+  <div class="modal-panel">
+    <div class="modal-header">
+      <div class="modal-meta">
+        <span class="modal-ticker" id="modalTicker">—</span>
+        <span class="modal-source" id="modalSource">—</span>
+        <span class="modal-time mono" id="modalTime">—</span>
+      </div>
+      <button class="modal-close" id="modalClose">✕</button>
+    </div>
+    <div class="modal-body">
+      <h2 class="modal-headline" id="modalHeadline">—</h2>
+      <div class="modal-sentiment-row" id="modalSentimentRow"></div>
+      <div class="modal-sections">
+        <div class="modal-section">
+          <div class="modal-section-title">WHY THIS MATTERS</div>
+          <p id="modalWhyMatters">—</p>
+        </div>
+        <div class="modal-section">
+          <div class="modal-section-title">WHAT COULD MOVE</div>
+          <p id="modalWhatMoves">—</p>
+        </div>
+        <div class="modal-section">
+          <div class="modal-section-title">AI SUMMARY</div>
+          <p id="modalAISummary">—</p>
+        </div>
+        <div class="modal-section">
+          <div class="modal-section-title">RELATED STOCKS</div>
+          <div id="modalRelatedStocks" class="tag-row"></div>
+        </div>
+        <div class="modal-section">
+          <div class="modal-section-title">SENTIMENT BREAKDOWN</div>
+          <div id="modalSentimentBreakdown" class="sentiment-bars"></div>
+        </div>
+      </div>
+      <a id="modalReadMore" href="#" target="_blank" rel="noopener" class="read-more-btn">Read Full Article →</a>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== STOCK DETAIL MODAL ======================== -->
+<div id="stockModal" class="modal-overlay hidden">
+  <div class="modal-panel wide">
+    <div class="modal-header">
+      <div class="modal-meta">
+        <span class="modal-ticker" id="stockModalSymbol">—</span>
+        <span class="modal-source" id="stockModalName">—</span>
+      </div>
+      <button class="modal-close" id="stockModalClose">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="stock-detail-header">
+        <div class="stock-price-block">
+          <span class="stock-detail-price mono" id="stockDetailPrice">—</span>
+          <span class="stock-detail-change mono" id="stockDetailChange">—</span>
+        </div>
+        <div class="stock-stats-row" id="stockStatsRow"></div>
+        <div class="stock-stats-row alt-data-row" id="stockAltDataRow"></div>
+      </div>
+      <div class="stock-sentiment-row" id="stockSentimentRow"></div>
+      <div class="stock-chart-section">
+        <div class="chart-tabs">
+          <button class="chart-tab active" data-chart="price">Price</button>
+          <button class="chart-tab" data-chart="sentiment">Sentiment</button>
+        </div>
+        <canvas id="stockPriceChart" height="120"></canvas>
+      </div>
+      <div class="modal-section">
+        <div class="modal-section-title">RECENT NEWS</div>
+        <div id="stockNewsItems" class="stock-news-items"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== TOAST ======================== -->
+<div id="toastContainer" class="toast-container"></div>
+
+<!-- ======================== SCRIPTS ======================== -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="app.js"></script>
+
+<!-- ======================== CHATBOT WIDGET ======================== -->
+<div id="chatWidget" class="chat-widget">
+  <div id="chatWindow" class="chat-window hidden">
+    <div class="chat-header">
+      <div style="display:flex; align-items:center; gap:8px">
+        <div class="status-dot"></div>
+        <strong>Market-Signal Copilot</strong>
+      </div>
+      <button class="modal-close" id="chatCloseBtn" style="position:static; padding:4px">✕</button>
+    </div>
+    <div class="chat-messages" id="chatMessages">
+      <div class="chat-msg ai">Hello! I'm your Market-Signal Copilot. Ask me for price updates, news sentiment, or predictions for any major Indian stock!</div>
+    </div>
+    <div class="chat-input-area">
+      <input type="text" id="chatInput" placeholder="E.g. What is the sentiment for TCS?" autocomplete="off" />
+      <button id="chatSendBtn">➤</button>
+    </div>
+  </div>
+  <button id="chatToggleBtn" class="chat-toggle-btn" style="padding:0; overflow:hidden; border:2px solid var(--info);">
+    <img src="bot-icon.png" alt="Market-Signal Bot" style="width:100%; height:100%; object-fit:cover;">
+  </button>
+</div>
+
+</body>
+</html>
