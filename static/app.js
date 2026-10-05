@@ -10,7 +10,7 @@
 // CONFIG
 // ============================================================
 const CONFIG = {
-  API_BASE: 'http://localhost:5001',  // Flask backend
+  API_BASE: '',  // Flask backend
   POLL_NEWS_MS:     90_000,   // 90s news refresh
   POLL_MARKET_MS:   60_000,   // 60s market data refresh
   POLL_SIGNALS_MS: 120_000,   // 2min signals refresh
