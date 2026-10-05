@@ -28,7 +28,7 @@ Market-Signal scrapes live Google News RSS feeds for targeted stocks and passes 
 Built with prediction platforms in mind, Market-Signal translates the AI sentiment score into a probability percentage (e.g., "64% chance of upward momentum"). It then automatically outputs a calculated **Fair Value Price** (e.g., ₹6.4 for a YES contract) and allows users to simulate buying these contracts.
 
 ### 4. Autonomous NLP Copilot
-![Chatbot Copilot](assets/screenshot6.png)
+![Chatbot Copilot](assets/ss1.png)
 A custom-built, regex-driven NLP chatbot acts as your trading copilot. It understands user intent (Price vs. Sentiment vs. Predictions), handles anti-hallucination guardrails seamlessly, and **dynamically auto-fetches missing backend data** in real-time if a queried stock isn't currently cached.
 
 ### 5. System Alerts & UI Polish
