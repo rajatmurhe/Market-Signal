@@ -1451,17 +1451,30 @@ function renderSectorsFocused(grid) {
 function renderAlertsFocused(grid) {
   let html = '';
   (STATE.alerts || []).forEach(al => {
-    // Determine sentiment styling from direction
-    const isBull = al.direction.toUpperCase() === 'BULLISH';
-    const isBear = al.direction.toUpperCase() === 'BEARISH';
-    const borderColor = isBull ? 'var(--bullish)' : (isBear ? 'var(--bearish)' : 'var(--warning)');
+    // Determine sentiment styling from score
+    let borderColor = 'var(--warning)';
+    let badgeClass = 'neutral';
+    let directionStr = 'NEUTRAL';
+    
+    if (al.score > 60) {
+        borderColor = 'var(--bullish)';
+        badgeClass = 'bullish';
+        directionStr = 'BULLISH';
+    } else if (al.score < 40) {
+        borderColor = 'var(--bearish)';
+        badgeClass = 'bearish';
+        directionStr = 'BEARISH';
+    }
+    
+    const impactStr = al.impact ? al.impact.toUpperCase() : 'MEDIUM';
+    const nameStr = al.symbol || 'MARKET';
     
     html += `<div class="pred-card hover-glow" style="padding:16px; height:auto; min-height:120px; cursor:pointer; display:flex; flex-direction:column; justify-content:space-between; border-left:4px solid ${borderColor}" onclick="openStockModal('${al.symbol}')">
         <div>
-          <div style="font-size:14px; font-weight:bold; color:var(--text-main); margin-bottom:8px">${al.name} <span class="sentiment-badge ${isBull ? 'bullish' : (isBear ? 'bearish' : 'neutral')}" style="margin-left:8px; font-size:10px">${al.direction}</span></div>
-          <div style="font-size:13px; color:var(--text-muted); line-height:1.5">${al.reason}</div>
+          <div style="font-size:14px; font-weight:bold; color:var(--text-main); margin-bottom:8px">${nameStr} <span class="sentiment-badge ${badgeClass}" style="margin-left:8px; font-size:10px">${directionStr} (Score: ${al.score})</span></div>
+          <div style="font-size:13px; color:var(--text-muted); line-height:1.5">${al.description || al.reason || ''}</div>
         </div>
-        <div style="margin-top:16px; font-size:11px; color:var(--text-muted); font-family:'IBM Plex Mono'">IMPACT: ${al.impact.toUpperCase()}</div>
+        <div style="margin-top:16px; font-size:11px; color:var(--text-muted); font-family:'IBM Plex Mono'">IMPACT: ${impactStr} &nbsp;|&nbsp; TYPE: ${(al.type_label || 'ALERT').toUpperCase()}</div>
     </div>`;
   });
   grid.innerHTML = html || '<div style="color:var(--text-muted)">No alerts yet...</div>';
