@@ -20,11 +20,9 @@
 The backend seamlessly connects to Yahoo Finance (`yfinance`) for real-time ticker pricing (NIFTY 50, TCS, Reliance, etc.). The UI features a Bloomberg-style continuous ticker tape and a dynamic live watchlist that updates mathematically correct day-over-day changes.
 
 ### 2. AI News Sentiment Engine
-![Sentiment Engine](assets/screenshot3.png)
 Market-Signal scrapes live Google News RSS feeds for targeted stocks and passes headlines through a **VADER Natural Language Processing (NLP)** pipeline. It translates text sentiment (Bullish/Bearish) into a 0-100 score, enabling Explainable AI (XAI) that highlights exactly *why* a market is moving.
 
 ### 3. Prediction Market Engine (Yeno Fair Value)
-![Prediction Engine](assets/screenshot4.png)
 Built with prediction platforms in mind, Market-Signal translates the AI sentiment score into a probability percentage (e.g., "64% chance of upward momentum"). It then automatically outputs a calculated **Fair Value Price** (e.g., ₹6.4 for a YES contract) and allows users to simulate buying these contracts.
 
 ### 4. Autonomous NLP Copilot
